@@ -12,7 +12,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 @EnableWebMvc
 class WebConfig : WebMvcConfigurer {
-    override fun addCorsMappings(registry: CorsRegistry) {}
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**")
+            .allowedOrigins("http://localhost:3000", "http://localhost:8080")
+            .allowCredentials(true)
+    }
 
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val converter = KotlinSerializationJsonHttpMessageConverter(Json {

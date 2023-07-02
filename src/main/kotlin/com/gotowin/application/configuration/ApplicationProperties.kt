@@ -1,0 +1,3 @@
+package com.gotowin.application.configuration
+
+class ApplicationProperties
