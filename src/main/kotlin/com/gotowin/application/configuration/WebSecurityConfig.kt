@@ -23,9 +23,7 @@ class WebSecurityConfig(
 
     companion object {
         const val BEARER_KEY_SECURITY_SCHEME = "bearer-key"
-        const val ADMIN_ROLE = "ROLE_ADMIN"
         const val USER_ROLE = "ROLE_USER"
-        const val UNSUPPORTED_ROLE = "ROLE_unsupported"
     }
 
     @Bean

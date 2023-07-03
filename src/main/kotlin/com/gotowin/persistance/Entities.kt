@@ -29,12 +29,6 @@ data class GotowinUserEntity(
 
     val createdOn: LocalDate,
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-    @JoinTable(name = "user_roles",
-        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")])
-    val roles: List<Role>,
-
     var activated: Boolean,
 
     var activationKey: String?,
@@ -47,18 +41,6 @@ data class GotowinUserEntity(
 ) {
     fun hasAccess() = activated
 }
-
-
-@Entity
-@Table(name = "role")
-data class Role (
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-
-    @Column(length = 60)
-    val name: String
-)
 
 // ----------------------------------------------------------------------------------------------------------------------
 

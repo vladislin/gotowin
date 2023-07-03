@@ -1,12 +1,9 @@
 package com.gotowin.application.web
 
 import com.gotowin.application.configuration.WebSecurityConfig
-import com.gotowin.business.security.UserContextService
-import com.gotowin.persistance.repository.UserRepository
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.access.annotation.Secured
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

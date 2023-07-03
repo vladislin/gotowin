@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
@@ -25,8 +24,7 @@ import org.springframework.web.bind.annotation.*
 class AuthResource(
     private val userFacade: UserFacade,
     private val authenticationManager: AuthenticationManager,
-    private val jwtTokenProvider: JwtTokenProvider,
-    private val mailService: MailService
+    private val jwtTokenProvider: JwtTokenProvider
 ) {
 
     @PostMapping("/authenticate")

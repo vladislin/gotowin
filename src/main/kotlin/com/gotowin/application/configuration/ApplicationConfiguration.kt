@@ -1,6 +1,5 @@
 package com.gotowin.application.configuration
 
-import com.gotowin.business.security.UserContextService
 import com.gotowin.core.adapter.UserRepositoryAdapter
 import com.gotowin.core.facade.UserFacade
 import org.springframework.context.annotation.Bean

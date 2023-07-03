@@ -9,7 +9,6 @@ import com.gotowin.core.domain.PasswordReset
 import com.gotowin.core.domain.RegisterDTO
 import com.gotowin.core.domain.util.RandomUtil
 import com.gotowin.persistance.GotowinUserEntity
-import com.gotowin.persistance.Role
 import com.gotowin.persistance.repository.UserRepository
 import com.gotowin.persistance.toBusinessModel
 import org.slf4j.LoggerFactory
@@ -50,7 +49,6 @@ class PersistentUserRepositoryAdapter(
                 fullName = user.fullName,
                 password = encryptedPassword,
                 createdOn = LocalDate.now(),
-                roles = listOf(Role(name = "ROLE_USER")),
                 activated = false,
                 activationKey = RandomUtil.generateActivationKey(),
                 referralCode = RandomUtil.generateReferralCode(),
@@ -63,7 +61,6 @@ class PersistentUserRepositoryAdapter(
                 fullName = user.fullName,
                 password = encryptedPassword,
                 createdOn = LocalDate.now(),
-                roles = listOf(Role(name = "ROLE_USER")),
                 activated = false,
                 activationKey = RandomUtil.generateActivationKey(),
                 referralCode = RandomUtil.generateReferralCode()
