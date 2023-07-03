@@ -39,7 +39,11 @@ data class GotowinUserEntity(
 
     var activationKey: String?,
 
-    var resetKey: String? = null
+    var resetKey: String? = null,
+
+    val referralCode: String,
+
+    val referralUserId: UUID? = null
 ) {
     fun hasAccess() = activated
 }
@@ -64,6 +68,7 @@ fun GotowinUserEntity.toBusinessModel(): GotowinUser {
         id = id,
         email = email,
         fullName = fullName,
-        activated = activated
+        activated = activated,
+        referralCode = referralCode
     )
 }

@@ -9,6 +9,7 @@ data class RegisterDTO(
     val email: String,
     val password: String,
     val confirmPassword: String,
+    val referralCode: String?
 )
 
 data class AuthenticateDTO(val email: String, val password: String)
@@ -23,7 +24,8 @@ data class GotowinUser(
     val id: UUID,
     val email: String,
     val fullName: String,
-    val activated: Boolean
+    val activated: Boolean,
+    val referralCode: String
 )
 
 data class ChangePassword(

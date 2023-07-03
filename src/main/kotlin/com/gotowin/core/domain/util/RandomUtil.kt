@@ -9,4 +9,6 @@ object RandomUtil {
 
     fun generateResetKey(): String = RandomStringUtils.randomNumeric(20)
 
+    fun generateReferralCode(): String = RandomStringUtils.randomAlphanumeric(20)
+
 }

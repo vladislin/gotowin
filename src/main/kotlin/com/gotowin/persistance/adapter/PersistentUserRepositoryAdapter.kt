@@ -33,19 +33,42 @@ class PersistentUserRepositoryAdapter(
     @Transactional
     override fun registerUser(user: RegisterDTO): GotowinUserEntity {
         val encryptedPassword = passwordEncoder.encode(user.password)
-        val newUser = GotowinUserEntity(
-            id = UUID.randomUUID(),
-            email = user.email,
-            fullName = user.fullName,
-            password = encryptedPassword,
-            createdOn = LocalDate.now(),
-            roles = listOf(Role(name = "ROLE_USER")),
-            activated = false,
-            activationKey = RandomUtil.generateActivationKey(),
-        )
+        val newUser = createReferralOrParentUser(user, encryptedPassword)
         userRepository.save(newUser)
         mailService.sendStandardEmail(newUser, SimpleMailSenderRequest.ACCOUNT_ACTIVATION.getModel(newUser))
         logger.debug("Created user: {}", newUser)
+        return newUser
+    }
+
+    private fun createReferralOrParentUser(user: RegisterDTO, encryptedPassword: String): GotowinUserEntity {
+        val newUser = if (user.referralCode != null) {
+            val referralUserId = userRepository.findByReferralCode(user.referralCode)?.id
+                ?: throw Exception("No user with this referral code")
+            GotowinUserEntity(
+                id = UUID.randomUUID(),
+                email = user.email,
+                fullName = user.fullName,
+                password = encryptedPassword,
+                createdOn = LocalDate.now(),
+                roles = listOf(Role(name = "ROLE_USER")),
+                activated = false,
+                activationKey = RandomUtil.generateActivationKey(),
+                referralCode = RandomUtil.generateReferralCode(),
+                referralUserId = referralUserId
+            )
+        } else {
+            GotowinUserEntity(
+                id = UUID.randomUUID(),
+                email = user.email,
+                fullName = user.fullName,
+                password = encryptedPassword,
+                createdOn = LocalDate.now(),
+                roles = listOf(Role(name = "ROLE_USER")),
+                activated = false,
+                activationKey = RandomUtil.generateActivationKey(),
+                referralCode = RandomUtil.generateReferralCode()
+            )
+        }
         return newUser
     }
 

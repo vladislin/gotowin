@@ -10,4 +10,5 @@ interface UserRepository : JpaRepository<GotowinUserEntity, UUID> {
     fun findByActivationKey(key: String): GotowinUserEntity?
     fun existsByEmail(email: String): Boolean
     fun findByResetKey(resetKey: String): GotowinUserEntity?
+    fun findByReferralCode(referralCode: String): GotowinUserEntity?
 }
