@@ -23,11 +23,15 @@ data class GotowinUserEntity(
     @Column(length = 100, unique = true)
     val email: String,
 
-    @Column
+    val createdOn: LocalDate,
+
+    val referralCode: String,
+
+    val referralUserId: UUID? = null,
+
+    // mutable variables
     @JsonIgnore
     var password: String,
-
-    val createdOn: LocalDate,
 
     var activated: Boolean,
 
@@ -35,9 +39,11 @@ data class GotowinUserEntity(
 
     var resetKey: String? = null,
 
-    val referralCode: String,
+    var referralEarnedBalance: Float = 0F,
 
-    val referralUserId: UUID? = null
+    var walletAddress: String? = null,
+
+    var walletBalance: Float = 0F
 ) {
     fun hasAccess() = activated
 }
@@ -51,6 +57,9 @@ fun GotowinUserEntity.toBusinessModel(): GotowinUser {
         email = email,
         fullName = fullName,
         activated = activated,
-        referralCode = referralCode
+        referralCode = referralCode,
+        referralEarnedBalance = referralEarnedBalance,
+        walletAddress = walletAddress ?: "",
+        walletBalance = walletBalance
     )
 }

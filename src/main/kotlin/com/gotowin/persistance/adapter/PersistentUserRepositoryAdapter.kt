@@ -112,7 +112,9 @@ class PersistentUserRepositoryAdapter(
 
     override fun completePasswordReset(passwordReset: PasswordReset) {
         val user = userRepository.findByResetKey(passwordReset.key) ?: throw Exception("No user was found for this reset key")
-        val newPassword = passwordEncoder.encode(passwordReset.newPassword)
+        val newPassword =if (passwordReset.newPassword == passwordReset.newPasswordConfirm) {
+            passwordEncoder.encode(passwordReset.newPassword)
+        } else { throw Exception("Passwords are not equals") }
 
         user.password = newPassword
         user.resetKey = null

@@ -25,7 +25,10 @@ data class GotowinUser(
     val email: String,
     val fullName: String,
     val activated: Boolean,
-    val referralCode: String
+    val referralCode: String,
+    val referralEarnedBalance: Float,
+    val walletAddress: String,
+    val walletBalance: Float
 )
 
 data class ChangePassword(
@@ -36,4 +39,5 @@ data class ChangePassword(
 data class PasswordReset(
     val key: String,
     val newPassword: String,
+    val newPasswordConfirm: String
 )
