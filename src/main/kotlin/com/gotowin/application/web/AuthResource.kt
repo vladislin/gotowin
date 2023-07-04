@@ -3,8 +3,10 @@ package com.gotowin.application.web
 import com.gotowin.application.configuration.WebSecurityConfig
 import com.gotowin.business.mail.MailService
 import com.gotowin.business.security.JwtTokenProvider
+import com.gotowin.business.security.UserContextService
 import com.gotowin.core.domain.*
 import com.gotowin.core.facade.UserFacade
+import com.gotowin.persistance.toBusinessModel
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
@@ -24,19 +26,20 @@ import org.springframework.web.bind.annotation.*
 class AuthResource(
     private val userFacade: UserFacade,
     private val authenticationManager: AuthenticationManager,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val userContextService: UserContextService
 ) {
     @PostMapping("/authenticate")
-    fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<JWTToken> {
+    fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<AuthenticateResponse> {
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(authenticateDTO.email, authenticateDTO.password))
-
         SecurityContextHolder.getContext().authentication = authentication
         println(SecurityContextHolder.getContext().authentication)
 
-        val jwt = jwtTokenProvider.generateToken(authentication)
-
-        return ResponseEntity(JWTToken(jwt), HttpStatus.OK)
+        val token = jwtTokenProvider.generateToken(authentication)
+        val user = userContextService.getCurrentUser().toBusinessModel()
+        val authenticateResponse = AuthenticateResponse(user, token)
+        return ResponseEntity(authenticateResponse, HttpStatus.OK)
     }
     @PostMapping("/register")
     fun registerUser(@RequestBody registerDTO: RegisterDTO): ResponseEntity<*> {
@@ -49,8 +52,8 @@ class AuthResource(
         userFacade.registerUser(registerDTO)
         return ResponseEntity("User registered successfully!", HttpStatus.CREATED)
     }
-    @GetMapping("/activate")
-    fun activateAccount(@RequestParam key: String) {
+    @GetMapping("/activate/{key}")
+    fun activateAccount(@PathVariable key: String) {
         userFacade.activateUser(key)
     }
     @GetMapping("/account")

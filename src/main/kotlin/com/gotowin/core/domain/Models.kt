@@ -12,8 +12,9 @@ data class RegisterDTO(
     val referralCode: String?
 )
 data class AuthenticateDTO(val email: String, val password: String)
-data class JWTToken(
-    @JsonProperty("id_token") val idToken: String
+data class AuthenticateResponse(
+    val userInfo: GotowinUser,
+    val idToken: String
 )
 // TODO: не закінчено
 data class GotowinUser(

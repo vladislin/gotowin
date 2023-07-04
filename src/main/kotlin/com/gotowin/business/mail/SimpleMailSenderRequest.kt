@@ -50,11 +50,11 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
     protected fun getLinkForEmail(user: GotowinUserEntity): String {
         val link = when (this) {
             RESET_PASSWORD -> {
-                "/#/reset/finish?key=${user.resetKey}"
+                "/reset/finish/${user.resetKey}"
             }
 
             ACCOUNT_ACTIVATION -> {
-                "/#/activate?key=${user.activationKey}"
+                "/activate/${user.activationKey}"
             }
 
             WELCOME -> {
