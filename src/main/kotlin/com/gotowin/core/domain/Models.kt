@@ -11,14 +11,10 @@ data class RegisterDTO(
     val confirmPassword: String,
     val referralCode: String?
 )
-
 data class AuthenticateDTO(val email: String, val password: String)
-
 data class JWTToken(
     @JsonProperty("id_token") val idToken: String
 )
-
-
 // TODO: не закінчено
 data class GotowinUser(
     val id: UUID,
@@ -30,12 +26,10 @@ data class GotowinUser(
     val walletAddress: String,
     val walletBalance: Float
 )
-
 data class ChangePassword(
     val password1: String,
     val password2: String
 )
-
 data class PasswordReset(
     val key: String,
     val newPassword: String,

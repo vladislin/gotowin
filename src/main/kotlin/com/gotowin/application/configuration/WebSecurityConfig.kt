@@ -20,16 +20,13 @@ class WebSecurityConfig(
     private val jwtAuthFilter: JwtAuthFilter,
     private val jwtAuthEntryPoint: JwtAuthEntryPoint
 ) {
-
     companion object {
         const val BEARER_KEY_SECURITY_SCHEME = "bearer-key"
         const val USER_ROLE = "ROLE_USER"
     }
-
     @Bean
     fun authenticationManager(configuration: AuthenticationConfiguration): AuthenticationManager =
         configuration.authenticationManager
-
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf().disable()
@@ -47,7 +44,6 @@ class WebSecurityConfig(
         http.exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint)
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
-
         return http.build()
     }
 }

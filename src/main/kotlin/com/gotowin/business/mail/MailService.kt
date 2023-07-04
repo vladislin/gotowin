@@ -15,9 +15,8 @@ import java.util.*
 
 
 @Service
-class MailService(
-    private val javaMailSender: JavaMailSender,
-    private val templateEngine: SpringTemplateEngine) {
+class MailService(private val javaMailSender: JavaMailSender,
+                  private val templateEngine: SpringTemplateEngine) {
 
     private val logger = LoggerFactory.getLogger(MailService::class.java)
 
@@ -29,7 +28,6 @@ class MailService(
         const val MODEL_KEY = "model"
         const val DEFAULT_TEMPLATE_NAME = "default"
     }
-
     @Async
     fun sendStandardEmail(user: GotowinUserEntity, model: MailModel) {
         val context = Context(Locale.ENGLISH)
@@ -40,7 +38,6 @@ class MailService(
         val from = InternetAddress(fromAddress, model.from)
         sendMail(from, user.email, subject, content)
     }
-
     private fun sendMail(from: InternetAddress, to: String, subject: String, content: String) {
         logger.debug("Send email to '{}' with subject '{}' and content={}", to, subject, content)
 

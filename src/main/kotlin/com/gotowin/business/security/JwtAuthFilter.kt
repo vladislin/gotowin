@@ -17,7 +17,6 @@ class JwtAuthFilter(
     private val jwtTokenProvider: JwtTokenProvider,
     private val userDetailsService: UserDetailsService
 ): OncePerRequestFilter() {
-
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val token = resolveToken(request) ?: ""
 
@@ -31,7 +30,6 @@ class JwtAuthFilter(
         }
         filterChain.doFilter(request, response)
     }
-
     private fun resolveToken(request: HttpServletRequest): String? {
         val bearerToken = request.getHeader("Authorization")
 

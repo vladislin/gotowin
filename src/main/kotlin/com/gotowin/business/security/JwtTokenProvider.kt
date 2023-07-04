@@ -34,7 +34,6 @@ class JwtTokenProvider {
             .signWith(key())
             .compact()
     }
-
     fun getUsername(token: String): String {
         val claims = Jwts.parserBuilder()
             .setSigningKey(key())
@@ -46,7 +45,6 @@ class JwtTokenProvider {
 
         return username
     }
-
     fun validateToken(token: String): Boolean {
         try {
             Jwts.parserBuilder()
@@ -64,6 +62,5 @@ class JwtTokenProvider {
             throw Exception("JWT claims string is empty.")
         }
     }
-
     private fun key() = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret))
 }

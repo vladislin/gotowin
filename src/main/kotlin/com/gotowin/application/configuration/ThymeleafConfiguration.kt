@@ -9,7 +9,6 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
 @Configuration
 class ThymeleafConfiguration {
-
     @Bean
     @Description("Thymeleaf template resolver serving HTML 5 emails")
     fun emailTemplateResolver(): ClassLoaderTemplateResolver {

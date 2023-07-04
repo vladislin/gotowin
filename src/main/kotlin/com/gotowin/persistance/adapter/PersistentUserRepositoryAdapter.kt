@@ -26,9 +26,7 @@ class PersistentUserRepositoryAdapter(
     private val mailService: MailService,
     private val userContextService: UserContextService
 ): UserRepositoryAdapter    {
-
     private val logger = LoggerFactory.getLogger(PersistentUserRepositoryAdapter::class.java)
-
     @Transactional
     override fun registerUser(user: RegisterDTO): GotowinUserEntity {
         val encryptedPassword = passwordEncoder.encode(user.password)
@@ -38,7 +36,6 @@ class PersistentUserRepositoryAdapter(
         logger.debug("Created user: {}", newUser)
         return newUser
     }
-
     private fun createReferralOrParentUser(user: RegisterDTO, encryptedPassword: String): GotowinUserEntity {
         val newUser = if (user.referralCode != null) {
             val referralUserId = userRepository.findByReferralCode(user.referralCode)?.id
@@ -68,15 +65,12 @@ class PersistentUserRepositoryAdapter(
         }
         return newUser
     }
-
     override fun existByEmail(email: String): Boolean {
         return userRepository.existsByEmail(email)
     }
-
     override fun findByEmailIgnoreCase(email: String): GotowinUserEntity? {
         return userRepository.findByEmailIgnoreCase(email)
     }
-
     override fun activateUser(key: String): GotowinUserEntity {
         val user = userRepository.findByActivationKey(key)
         if (user != null) {
@@ -89,12 +83,10 @@ class PersistentUserRepositoryAdapter(
             throw Exception("No user was found for this reset key")
         }
     }
-
     override fun getUser(): GotowinUser {
         val currentUser = userContextService.getCurrentUser()
         return currentUser.toBusinessModel()
     }
-
     override fun changePassword(password: String) {
         val currentUser = userContextService.getCurrentUser()
         val newPassword = passwordEncoder.encode(password)
@@ -102,17 +94,15 @@ class PersistentUserRepositoryAdapter(
         userRepository.save(currentUser)
         logger.debug("Changed password for User: {}", currentUser)
     }
-
     override fun requestPasswordReset(mail: String) {
         val user = userRepository.findByEmailIgnoreCase(mail) ?: throw Exception("No user was found with this email")
         user.resetKey = RandomUtil.generateResetKey()
         userRepository.save(user)
         mailService.sendStandardEmail(user, SimpleMailSenderRequest.RESET_PASSWORD.getModel(user))
     }
-
     override fun completePasswordReset(passwordReset: PasswordReset) {
         val user = userRepository.findByResetKey(passwordReset.key) ?: throw Exception("No user was found for this reset key")
-        val newPassword =if (passwordReset.newPassword == passwordReset.newPasswordConfirm) {
+        val newPassword = if (passwordReset.newPassword == passwordReset.newPasswordConfirm) {
             passwordEncoder.encode(passwordReset.newPassword)
         } else { throw Exception("Passwords are not equals") }
 

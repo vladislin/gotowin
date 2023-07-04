@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig {
-
     @Bean
     fun customOpenAPI(): OpenAPI {
         return OpenAPI()
@@ -28,7 +27,6 @@ class SwaggerConfig {
             )
             .info(Info().title("GoToWin API"))
     }
-
     @Bean
     fun customApi(): GroupedOpenApi {
         return GroupedOpenApi.builder().group("api").pathsToMatch("/**").build()

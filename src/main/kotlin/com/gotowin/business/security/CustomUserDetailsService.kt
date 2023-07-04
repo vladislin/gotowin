@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomUserDetailsService(private val userRepositoryAdapter: UserRepositoryAdapter): UserDetailsService {
-
     override fun loadUserByUsername(username: String): UserDetails {
         val authorities: HashSet<GrantedAuthority> = HashSet()
         val user = userRepositoryAdapter.findByEmailIgnoreCase(username) ?: throw UsernameNotFoundException("User not found with username $username")

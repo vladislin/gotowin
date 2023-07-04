@@ -26,7 +26,6 @@ class AuthResource(
     private val authenticationManager: AuthenticationManager,
     private val jwtTokenProvider: JwtTokenProvider
 ) {
-
     @PostMapping("/authenticate")
     fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<JWTToken> {
         val authentication = authenticationManager.authenticate(
@@ -39,8 +38,6 @@ class AuthResource(
 
         return ResponseEntity(JWTToken(jwt), HttpStatus.OK)
     }
-
-
     @PostMapping("/register")
     fun registerUser(@RequestBody registerDTO: RegisterDTO): ResponseEntity<*> {
         if (registerDTO.password != registerDTO.confirmPassword) {
@@ -52,22 +49,18 @@ class AuthResource(
         userFacade.registerUser(registerDTO)
         return ResponseEntity("User registered successfully!", HttpStatus.CREATED)
     }
-
     @GetMapping("/activate")
     fun activateAccount(@RequestParam key: String) {
         userFacade.activateUser(key)
     }
-
     @GetMapping("/account")
     fun getAccount(): GotowinUser {
         return userFacade.getUser()
     }
-
     @PostMapping("/account")
     fun saveAccount(@RequestBody user: GotowinUser) {
         TODO("Зробити апдейт юзера")
     }
-
     @PostMapping("/account/change-password")
     fun changePassword(@RequestBody changePassword: ChangePassword): ResponseEntity<*> {
         if (changePassword.password1 != changePassword.password2) {
@@ -76,12 +69,10 @@ class AuthResource(
         userFacade.changePassword(changePassword.password1)
         return ResponseEntity("Password changed", HttpStatus.OK)
     }
-
     @PostMapping("/account/reset-password/init")
     fun requestPasswordReset(@RequestParam mail: String) {
         userFacade.requestPasswordReset(mail)
     }
-
     @PostMapping("/account/reset-password/finish")
     fun finishPasswordReset(@RequestBody passwordReset: PasswordReset) {
         userFacade.completePasswordReset(passwordReset)

@@ -17,7 +17,6 @@ class WebConfig : WebMvcConfigurer {
             .allowedOrigins("http://localhost:3000", "http://localhost:8080")
             .allowCredentials(true)
     }
-
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val converter = KotlinSerializationJsonHttpMessageConverter(Json {
             ignoreUnknownKeys = true

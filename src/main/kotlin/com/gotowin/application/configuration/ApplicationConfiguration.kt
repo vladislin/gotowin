@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class ApplicationConfiguration {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
-
     @Bean
     fun userFacade(userRepositoryAdapter: UserRepositoryAdapter) = UserFacade(userRepositoryAdapter = userRepositoryAdapter)
 }

@@ -11,17 +11,10 @@ import org.springframework.stereotype.Service
 @Service
 @Transactional
 class UserContextService(private val userRepository: UserRepository) {
-
     fun getCurrentUser(): GotowinUserEntity {
         val principal = SecurityContextHolder.getContext().authentication.principal
-        val username = if (principal is UserDetails) {
-            principal.username
-        } else {
-            principal.toString()
-        }
+        val username = if (principal is UserDetails) principal.username else principal.toString()
 
-        return userRepository.findByEmailIgnoreCase(username)
-            ?: throw RuntimeException("User not found")
+        return userRepository.findByEmailIgnoreCase(username) ?: throw RuntimeException("User not found")
     }
-
 }
