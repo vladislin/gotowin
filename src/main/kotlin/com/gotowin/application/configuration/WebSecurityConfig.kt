@@ -35,7 +35,7 @@ class WebSecurityConfig(
             .requestMatchers(
                 "/api/register",
                 "/api/authenticate",
-                "/api/activate/**",
+                "/api/activate",
                 "/api/account/reset-password/init",
                 "/api/account/reset-password/finish").permitAll()
 

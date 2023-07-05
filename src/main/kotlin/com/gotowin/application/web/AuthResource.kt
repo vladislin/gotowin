@@ -52,8 +52,8 @@ class AuthResource(
         userFacade.registerUser(registerDTO)
         return ResponseEntity("User registered successfully!", HttpStatus.CREATED)
     }
-    @GetMapping("/activate/{key}")
-    fun activateAccount(@PathVariable key: String) {
+    @GetMapping("/activate")
+    fun activateAccount(@RequestParam key: String) {
         userFacade.activateUser(key)
     }
     @GetMapping("/account")
