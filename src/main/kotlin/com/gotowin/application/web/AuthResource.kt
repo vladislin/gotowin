@@ -30,16 +30,15 @@ class AuthResource(
     private val userContextService: UserContextService
 ) {
     @PostMapping("/authenticate")
-    fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<AuthenticateResponse> {
+    fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<JWTToken> {
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(authenticateDTO.email, authenticateDTO.password))
         SecurityContextHolder.getContext().authentication = authentication
         println(SecurityContextHolder.getContext().authentication)
 
         val token = jwtTokenProvider.generateToken(authentication)
-        val user = userContextService.getCurrentUser().toBusinessModel()
-        val authenticateResponse = AuthenticateResponse(user, token)
-        return ResponseEntity(authenticateResponse, HttpStatus.OK)
+
+        return ResponseEntity(JWTToken(token), HttpStatus.OK)
     }
     @PostMapping("/register")
     fun registerUser(@RequestBody registerDTO: RegisterDTO): ResponseEntity<*> {

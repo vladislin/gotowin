@@ -62,6 +62,6 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
             }
         }
 
-        return "http://localhost:8080$link"
+        return "http://localhost:3000$link"
     }
 }
