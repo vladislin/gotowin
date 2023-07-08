@@ -41,6 +41,8 @@ data class GotowinUserEntity(
 
     var referralEarnedBalance: Float = 0F,
 
+    var referralCount: Int = 0,
+
     var walletAddress: String? = null,
 
     var walletBalance: Float = 0F
