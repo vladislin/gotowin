@@ -35,3 +35,7 @@ data class PasswordReset(
     val newPassword: String,
     val newPasswordConfirm: String
 )
+
+data class WalletAddressUpdate(
+    val walletAddress: String
+)

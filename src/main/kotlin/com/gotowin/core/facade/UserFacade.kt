@@ -10,6 +10,7 @@ class UserFacade(private val userRepositoryAdapter: UserRepositoryAdapter) {
     fun existByEmail(email: String) = userRepositoryAdapter.existByEmail(email)
     fun activateUser(key: String) = userRepositoryAdapter.activateUser(key)
     fun getUser() = userRepositoryAdapter.getUser()
+    fun updateWalletAddress(walletAddress: String) = userRepositoryAdapter.updateWalletAddress(walletAddress)
     fun changePassword(password: String) = userRepositoryAdapter.changePassword(password)
     fun requestPasswordReset(mail: String) = userRepositoryAdapter.requestPasswordReset(mail)
     fun completePasswordReset(passwordReset: PasswordReset) = userRepositoryAdapter.completePasswordReset(passwordReset)

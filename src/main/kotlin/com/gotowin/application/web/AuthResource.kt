@@ -1,12 +1,9 @@
 package com.gotowin.application.web
 
 import com.gotowin.application.configuration.WebSecurityConfig
-import com.gotowin.business.mail.MailService
 import com.gotowin.business.security.JwtTokenProvider
-import com.gotowin.business.security.UserContextService
 import com.gotowin.core.domain.*
 import com.gotowin.core.facade.UserFacade
-import com.gotowin.persistance.toBusinessModel
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
@@ -27,7 +24,6 @@ class AuthResource(
     private val userFacade: UserFacade,
     private val authenticationManager: AuthenticationManager,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val userContextService: UserContextService
 ) {
     @PostMapping("/authenticate")
     fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<JWTToken> {
@@ -59,9 +55,9 @@ class AuthResource(
     fun getAccount(): GotowinUser {
         return userFacade.getUser()
     }
-    @PostMapping("/account")
-    fun saveAccount(@RequestBody user: GotowinUser) {
-        TODO("Зробити апдейт юзера")
+    @PostMapping("/account/change-wallet-address")
+    fun updateWalletAddress(@RequestBody walletAddressUpdate: WalletAddressUpdate): GotowinUser {
+        return userFacade.updateWalletAddress(walletAddressUpdate.walletAddress)
     }
     @PostMapping("/account/change-password")
     fun changePassword(@RequestBody changePassword: ChangePassword): ResponseEntity<*> {

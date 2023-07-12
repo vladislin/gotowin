@@ -93,6 +93,13 @@ class PersistentUserRepositoryAdapter(
         return currentUser.toBusinessModel()
     }
 
+    override fun updateWalletAddress(walletAddress: String): GotowinUser {
+        val user = userContextService.getCurrentUser()
+        user.walletAddress = walletAddress
+        userRepository.save(user)
+        return user.toBusinessModel()
+    }
+
     override fun changePassword(password: String) {
         val currentUser = userContextService.getCurrentUser()
         val newPassword = passwordEncoder.encode(password)

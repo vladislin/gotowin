@@ -12,6 +12,7 @@ interface UserRepositoryAdapter {
     fun findByEmailIgnoreCase(email: String): GotowinUserEntity?
     fun activateUser(key: String): GotowinUserEntity
     fun getUser(): GotowinUser
+    fun updateWalletAddress(walletAddress: String): GotowinUser
     fun changePassword(password: String)
     fun requestPasswordReset(mail: String)
     fun completePasswordReset(passwordReset: PasswordReset)
