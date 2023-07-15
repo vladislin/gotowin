@@ -17,5 +17,5 @@ interface UserRepositoryAdapter {
     fun changePassword(password: String)
     fun requestPasswordReset(mail: String)
     fun completePasswordReset(passwordReset: PasswordReset)
-    fun calculatePrice(calculateRequest: CalculateRequest): Float
+    fun calculatePrice(value: Int): Map<String, Float>
 }

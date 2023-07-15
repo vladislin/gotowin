@@ -131,7 +131,8 @@ class PersistentUserRepositoryAdapter(
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    override fun calculatePrice(calculateRequest: CalculateRequest): Float {
-        return calculateRequest.valueToConvert * 1000
+    override fun calculatePrice(value: Int): Map<String, Float> {
+        val convertedValue = (value * 1000).toFloat()
+        return mapOf("convertedValue" to convertedValue)
     }
 }

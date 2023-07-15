@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController
 class WalletResource(
     private val walletFacade: WalletFacade
 ) {
-    @GetMapping("/calculate-price")
-    fun getCalculatedPrice(@RequestBody calculateRequest: CalculateRequest): Float {
-        return walletFacade.calculatePrice(calculateRequest)
+    @GetMapping("/calculate-price/{value}")
+    fun getCalculatedPrice(@PathVariable value: Int): Map<String, Float> {
+        return walletFacade.calculatePrice(value)
     }
 
     @PostMapping("/deposit")

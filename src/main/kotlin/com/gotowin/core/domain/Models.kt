@@ -40,5 +40,5 @@ data class WalletAddressUpdate(
 )
 
 data class CalculateRequest(
-    val valueToConvert: Float
+    val valueToConvert: Int
 )
