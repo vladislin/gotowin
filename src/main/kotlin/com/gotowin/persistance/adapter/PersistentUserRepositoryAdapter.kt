@@ -4,6 +4,7 @@ import com.gotowin.business.mail.MailService
 import com.gotowin.business.mail.SimpleMailSenderRequest
 import com.gotowin.business.security.UserContextService
 import com.gotowin.core.adapter.UserRepositoryAdapter
+import com.gotowin.core.domain.CalculateRequest
 import com.gotowin.core.domain.GotowinUser
 import com.gotowin.core.domain.PasswordReset
 import com.gotowin.core.domain.RegisterDTO
@@ -126,5 +127,11 @@ class PersistentUserRepositoryAdapter(
         userRepository.save(user)
 
         logger.debug("Reset user password for reset key {}", passwordReset.key)
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    override fun calculatePrice(calculateRequest: CalculateRequest): Float {
+        return calculateRequest.valueToConvert * 1000
     }
 }

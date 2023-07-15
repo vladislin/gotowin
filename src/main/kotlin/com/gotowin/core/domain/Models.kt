@@ -1,7 +1,6 @@
 package com.gotowin.core.domain
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.UUID
+import java.util.*
 
 
 data class RegisterDTO(
@@ -38,4 +37,8 @@ data class PasswordReset(
 
 data class WalletAddressUpdate(
     val walletAddress: String
+)
+
+data class CalculateRequest(
+    val valueToConvert: Float
 )

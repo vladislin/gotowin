@@ -31,7 +31,6 @@ class WebSecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf().disable()
         http.authorizeHttpRequests()
-            .requestMatchers(HttpMethod.GET, "/api/healthcheck").authenticated()
             .requestMatchers(
                 "/api/register",
                 "/api/authenticate",
