@@ -17,5 +17,5 @@ class ApplicationConfiguration {
     fun userFacade(userRepositoryAdapter: UserRepositoryAdapter) = UserFacade(userRepositoryAdapter = userRepositoryAdapter)
 
     @Bean
-    fun walletFacade() = WalletFacade()
+    fun walletFacade(userRepositoryAdapter: UserRepositoryAdapter) = WalletFacade(userRepositoryAdapter)
 }
