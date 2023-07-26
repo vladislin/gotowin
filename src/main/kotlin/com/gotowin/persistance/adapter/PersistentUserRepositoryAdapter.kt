@@ -33,7 +33,8 @@ class PersistentUserRepositoryAdapter(
     @Transactional
     override fun registerUser(user: RegisterDTO): GotowinUserEntity {
         val encryptedPassword = passwordEncoder.encode(user.password)
-        val newUser = if (user.referralCode != null) createUserByReferral(user, encryptedPassword) else createSimpleUser(user, encryptedPassword)
+        val newUser = if (user.referralCode != null && user.referralCode.length > 10) createUserByReferral(user,encryptedPassword)
+        else createSimpleUser(user, encryptedPassword)
         userRepository.save(newUser)
         mailService.sendStandardEmail(newUser, SimpleMailSenderRequest.ACCOUNT_ACTIVATION.getModel(newUser))
         logger.debug("Created user: {}", newUser)
