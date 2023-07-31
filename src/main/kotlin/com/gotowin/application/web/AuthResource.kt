@@ -1,6 +1,7 @@
 package com.gotowin.application.web
 
 import com.gotowin.application.configuration.WebSecurityConfig
+import com.gotowin.business.exception.InvalidPasswordException
 import com.gotowin.business.security.JwtTokenProvider
 import com.gotowin.core.domain.*
 import com.gotowin.core.facade.UserFacade
@@ -39,7 +40,7 @@ class AuthResource(
     @PostMapping("/register")
     fun registerUser(@RequestBody registerDTO: RegisterDTO): ResponseEntity<*> {
         if (registerDTO.password != registerDTO.confirmPassword) {
-            return ResponseEntity("Passwords are not equals!", HttpStatus.BAD_REQUEST)
+            throw InvalidPasswordException("Passwords are not equals")
         }
         if (userFacade.existByEmail(registerDTO.email)) {
             return ResponseEntity("User already exist!", HttpStatus.BAD_REQUEST)
