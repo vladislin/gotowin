@@ -8,7 +8,7 @@ import com.gotowin.persistance.GotowinUserEntity
 
 
 interface UserRepositoryAdapter {
-    fun registerUser(user: RegisterDTO): GotowinUserEntity
+    fun registerUser(user: RegisterDTO, referralCode: String?): GotowinUserEntity
     fun existByEmail(email: String): Boolean
     fun findByEmailIgnoreCase(email: String): GotowinUserEntity?
     fun activateUser(key: String): GotowinUserEntity

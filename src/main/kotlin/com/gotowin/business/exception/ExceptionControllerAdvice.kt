@@ -24,4 +24,22 @@ class ExceptionControllerAdvice {
         val errorMsg = ErrorMessage(HttpStatus.NOT_FOUND.value(), ex.message)
         return ResponseEntity(errorMsg, HttpStatus.NOT_FOUND)
     }
+
+    @ExceptionHandler
+    fun handleResetKeyNotFoundException(ex: ResetKeyNotFoundException): ResponseEntity<ErrorMessage> {
+        val errorMsg = ErrorMessage(HttpStatus.NOT_FOUND.value(), ex.message)
+        return ResponseEntity(errorMsg, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler
+    fun handleActivationKeyNotFoundException(ex: ActivationKeyNotFoundException): ResponseEntity<ErrorMessage> {
+        val errorMsg = ErrorMessage(HttpStatus.NOT_FOUND.value(), ex.message)
+        return ResponseEntity(errorMsg, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler
+    fun handleReferralCodeNotFoundException(ex: ReferralCodeNotFoundException): ResponseEntity<ErrorMessage> {
+        val errorMsg = ErrorMessage(HttpStatus.NOT_FOUND.value(), ex.message)
+        return ResponseEntity(errorMsg, HttpStatus.NOT_FOUND)
+    }
 }

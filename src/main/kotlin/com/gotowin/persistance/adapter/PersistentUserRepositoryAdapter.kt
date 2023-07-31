@@ -1,7 +1,6 @@
 package com.gotowin.persistance.adapter
 
-import com.gotowin.business.exception.EmailNotFoundException
-import com.gotowin.business.exception.InvalidPasswordException
+import com.gotowin.business.exception.*
 import com.gotowin.business.mail.MailService
 import com.gotowin.business.mail.SimpleMailSenderRequest
 import com.gotowin.business.security.UserContextService
@@ -32,9 +31,9 @@ class PersistentUserRepositoryAdapter(
     private val logger = LoggerFactory.getLogger(PersistentUserRepositoryAdapter::class.java)
 
     @Transactional
-    override fun registerUser(user: RegisterDTO): GotowinUserEntity {
+    override fun registerUser(user: RegisterDTO, referralCode: String?): GotowinUserEntity {
         val encryptedPassword = passwordEncoder.encode(user.password)
-        val newUser = if (user.referralCode != null && user.referralCode.length > 10) createUserByReferral(user,encryptedPassword)
+        val newUser = if (referralCode != null && referralCode.length > 10) createUserByReferral(user, referralCode, encryptedPassword)
         else createSimpleUser(user, encryptedPassword)
         userRepository.save(newUser)
         mailService.sendStandardEmail(newUser, SimpleMailSenderRequest.ACCOUNT_ACTIVATION.getModel(newUser))
@@ -53,9 +52,9 @@ class PersistentUserRepositoryAdapter(
         referralCode = RandomUtil.generateReferralCode()
     )
 
-    private fun createUserByReferral(user: RegisterDTO, encryptedPassword: String): GotowinUserEntity {
+    private fun createUserByReferral(user: RegisterDTO, referralCode: String?, encryptedPassword: String): GotowinUserEntity {
         val referralUser =
-            userRepository.findByReferralCode(user.referralCode!!) ?: throw IllegalStateException("No user with this referral code")
+            userRepository.findByReferralCode(referralCode!!) ?: throw ReferralCodeNotFoundException()
         referralUser.referralCount++
 
         val newUser = GotowinUserEntity(
@@ -88,7 +87,7 @@ class PersistentUserRepositoryAdapter(
             userRepository.save(user)
             mailService.sendStandardEmail(user, SimpleMailSenderRequest.WELCOME.getModel(user))
             return user
-        } else { throw IllegalStateException("No user was found for this activation key") }
+        } else { throw ActivationKeyNotFoundException() }
     }
 
     override fun getUser(): GotowinUser {
@@ -119,7 +118,7 @@ class PersistentUserRepositoryAdapter(
     }
 
     override fun completePasswordReset(passwordReset: PasswordReset) {
-        val user = userRepository.findByResetKey(passwordReset.key) ?: throw IllegalStateException("No user was found for this reset key")
+        val user = userRepository.findByResetKey(passwordReset.key) ?: throw ResetKeyNotFoundException()
         val newPassword = if (passwordReset.newPassword == passwordReset.newPasswordConfirm) {
             passwordEncoder.encode(passwordReset.newPassword)
         } else { throw InvalidPasswordException("Passwords are not equals") }
