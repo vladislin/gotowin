@@ -38,8 +38,7 @@ class AuthResource(
         return ResponseEntity(JWTToken(token), HttpStatus.OK)
     }
     @PostMapping("/register")
-    fun registerUser(@RequestBody registerDTO: RegisterDTO,
-                     @RequestParam(required = false) referralCode: String?): ResponseEntity<*> {
+    fun registerUser(@RequestBody registerDTO: RegisterDTO): ResponseEntity<*> {
 
         if (registerDTO.password != registerDTO.confirmPassword) {
             throw InvalidPasswordException("Passwords are not equals")
@@ -47,7 +46,7 @@ class AuthResource(
         if (userFacade.existByEmail(registerDTO.email)) {
             return ResponseEntity("User already exist!", HttpStatus.BAD_REQUEST)
         }
-        userFacade.registerUser(registerDTO, referralCode)
+        userFacade.registerUser(registerDTO)
         return ResponseEntity("User registered successfully!", HttpStatus.CREATED)
     }
     @GetMapping("/activate")

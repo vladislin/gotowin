@@ -6,7 +6,7 @@ import com.gotowin.core.domain.PasswordReset
 
 
 class UserFacade(private val userRepositoryAdapter: UserRepositoryAdapter) {
-    fun registerUser(user: RegisterDTO, referralCode: String?) = userRepositoryAdapter.registerUser(user, referralCode)
+    fun registerUser(user: RegisterDTO) = userRepositoryAdapter.registerUser(user)
     fun existByEmail(email: String) = userRepositoryAdapter.existByEmail(email)
     fun activateUser(key: String) = userRepositoryAdapter.activateUser(key)
     fun getUser() = userRepositoryAdapter.getUser()

@@ -7,7 +7,8 @@ data class RegisterDTO(
     val fullName: String,
     val email: String,
     val password: String,
-    val confirmPassword: String
+    val confirmPassword: String,
+    val referralCode: String? = null
 )
 data class AuthenticateDTO(val email: String, val password: String)
 data class JWTToken(
@@ -22,7 +23,7 @@ data class GotowinUser(
     val referralCode: String,
     val referralEarnedBalance: Float,
     val walletAddress: String,
-    val walletBalance: Float
+    val walletBalance: Float,
 )
 data class ChangePassword(
     val password1: String,

@@ -31,9 +31,9 @@ class PersistentUserRepositoryAdapter(
     private val logger = LoggerFactory.getLogger(PersistentUserRepositoryAdapter::class.java)
 
     @Transactional
-    override fun registerUser(user: RegisterDTO, referralCode: String?): GotowinUserEntity {
+    override fun registerUser(user: RegisterDTO): GotowinUserEntity {
         val encryptedPassword = passwordEncoder.encode(user.password)
-        val newUser = if (referralCode != null && referralCode.length > 10) createUserByReferral(user, referralCode, encryptedPassword)
+        val newUser = if (user.referralCode != null && user.referralCode.length > 10) createUserByReferral(user, encryptedPassword)
         else createSimpleUser(user, encryptedPassword)
         userRepository.save(newUser)
         mailService.sendStandardEmail(newUser, SimpleMailSenderRequest.ACCOUNT_ACTIVATION.getModel(newUser))
@@ -52,9 +52,9 @@ class PersistentUserRepositoryAdapter(
         referralCode = RandomUtil.generateReferralCode()
     )
 
-    private fun createUserByReferral(user: RegisterDTO, referralCode: String?, encryptedPassword: String): GotowinUserEntity {
+    private fun createUserByReferral(user: RegisterDTO, encryptedPassword: String): GotowinUserEntity {
         val referralUser =
-            userRepository.findByReferralCode(referralCode!!) ?: throw ReferralCodeNotFoundException()
+            userRepository.findByReferralCode(user.referralCode!!) ?: throw ReferralCodeNotFoundException()
         referralUser.referralCount++
 
         val newUser = GotowinUserEntity(
