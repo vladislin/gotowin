@@ -21,6 +21,7 @@ data class GotowinUser(
     val fullName: String,
     val activated: Boolean,
     val referralCode: String,
+    val referralCount: Int,
     val referralEarnedBalance: Float,
     val walletAddress: String,
     val walletBalance: Float,

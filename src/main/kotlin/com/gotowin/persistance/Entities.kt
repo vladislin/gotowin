@@ -60,6 +60,7 @@ fun GotowinUserEntity.toBusinessModel(): GotowinUser {
         fullName = fullName,
         activated = activated,
         referralCode = referralCode,
+        referralCount = referralCount,
         referralEarnedBalance = referralEarnedBalance,
         walletAddress = walletAddress ?: "",
         walletBalance = walletBalance
