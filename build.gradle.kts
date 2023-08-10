@@ -25,6 +25,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
 	runtimeOnly("com.mysql:mysql-connector-j")
+	implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql:4.7.1")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -35,9 +36,6 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
-
-	implementation("org.zalando:problem-spring-web:0.22.0")
-
 }
 
 noArg {

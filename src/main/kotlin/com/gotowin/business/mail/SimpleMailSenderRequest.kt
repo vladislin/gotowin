@@ -2,6 +2,7 @@ package com.gotowin.business.mail
 
 import com.gotowin.core.domain.MailModel
 import com.gotowin.persistance.GotowinUserEntity
+import org.springframework.beans.factory.annotation.Value
 
 enum class SimpleMailSenderRequest : MailSenderRequest {
     RESET_PASSWORD {
@@ -32,6 +33,7 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
         }
     },
 
+
     WELCOME {
         override fun getModel(user: GotowinUserEntity): MailModel {
             return MailModel(
@@ -46,6 +48,7 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
         }
     }
     ;
+    @Value("\${hostname}") private val hostName: String = ""
 
     protected fun getLinkForEmail(user: GotowinUserEntity): String {
         val link = when (this) {
@@ -62,6 +65,6 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
             }
         }
 
-        return "http://localhost:3000$link"
+        return "http://$hostName$link"
     }
 }
