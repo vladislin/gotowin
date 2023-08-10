@@ -48,7 +48,6 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
         }
     }
     ;
-    @Value("\${hostname}") private val hostName: String = ""
 
     protected fun getLinkForEmail(user: GotowinUserEntity): String {
         val link = when (this) {
@@ -65,6 +64,6 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
             }
         }
 
-        return "http://$hostName$link"
+        return "http://test.gotowin.co$link"
     }
 }
