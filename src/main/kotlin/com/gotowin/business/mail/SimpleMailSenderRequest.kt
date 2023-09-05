@@ -64,6 +64,6 @@ enum class SimpleMailSenderRequest : MailSenderRequest {
             }
         }
 
-        return "http://test.gotowin.co$link"
+        return "https://gotowin.co$link"
     }
 }
