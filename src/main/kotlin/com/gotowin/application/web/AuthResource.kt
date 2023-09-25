@@ -27,7 +27,7 @@ class AuthResource(
     private val jwtTokenProvider: JwtTokenProvider,
 ) {
     @PostMapping("/authenticate")
-    fun authenticateUser(@RequestBody authenticateDTO: AuthenticateDTO): ResponseEntity<JWTToken> {
+    fun authenticateUser(@RequestBody authenticateDTO: AuthenticateRequest): ResponseEntity<JWTToken> {
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(authenticateDTO.email, authenticateDTO.password))
         SecurityContextHolder.getContext().authentication = authentication
@@ -38,7 +38,7 @@ class AuthResource(
         return ResponseEntity(JWTToken(token), HttpStatus.OK)
     }
     @PostMapping("/register")
-    fun registerUser(@RequestBody registerDTO: RegisterDTO): ResponseEntity<*> {
+    fun registerUser(@RequestBody registerDTO: RegisterRequest): ResponseEntity<*> {
 
         if (registerDTO.password != registerDTO.confirmPassword) {
             throw InvalidPasswordException("Passwords are not equals")
@@ -62,7 +62,7 @@ class AuthResource(
         return userFacade.updateWalletAddress(walletAddressUpdate.walletAddress)
     }
     @PostMapping("/account/change-password")
-    fun changePassword(@RequestBody changePassword: ChangePassword): ResponseEntity<*> {
+    fun changePassword(@RequestBody changePassword: ChangePasswordRequest): ResponseEntity<*> {
         if (changePassword.password1 != changePassword.password2) {
             return ResponseEntity("Passwords are not equals", HttpStatus.BAD_REQUEST)
         }
@@ -74,7 +74,7 @@ class AuthResource(
         userFacade.requestPasswordReset(mail)
     }
     @PostMapping("/account/reset-password/finish")
-    fun finishPasswordReset(@RequestBody passwordReset: PasswordReset) {
+    fun finishPasswordReset(@RequestBody passwordReset: PasswordResetRequest) {
         userFacade.completePasswordReset(passwordReset)
     }
 }

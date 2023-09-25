@@ -15,8 +15,9 @@ import java.util.*
 @Table(name = "user")
 data class GotowinUserEntity(
 
-    @Id @JdbcTypeCode(SqlTypes.VARCHAR)
-    val id: UUID,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
 
     val fullName: String,
 
@@ -27,7 +28,7 @@ data class GotowinUserEntity(
 
     val referralCode: String,
 
-    val referralUserId: UUID? = null,
+    val referralUserId: Long? = null,
 
     // mutable variables
     @JsonIgnore
@@ -55,7 +56,7 @@ data class GotowinUserEntity(
 
 fun GotowinUserEntity.toBusinessModel(): GotowinUser {
     return GotowinUser(
-        id = id,
+        id = id!!,
         email = email,
         fullName = fullName,
         activated = activated,

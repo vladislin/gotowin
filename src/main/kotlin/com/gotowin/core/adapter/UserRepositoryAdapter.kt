@@ -1,14 +1,13 @@
 package com.gotowin.core.adapter
 
-import com.gotowin.core.domain.CalculateRequest
 import com.gotowin.core.domain.GotowinUser
-import com.gotowin.core.domain.PasswordReset
-import com.gotowin.core.domain.RegisterDTO
+import com.gotowin.core.domain.PasswordResetRequest
+import com.gotowin.core.domain.RegisterRequest
 import com.gotowin.persistance.GotowinUserEntity
 
 
 interface UserRepositoryAdapter {
-    fun registerUser(user: RegisterDTO): GotowinUserEntity
+    fun registerUser(user: RegisterRequest): GotowinUserEntity
     fun existByEmail(email: String): Boolean
     fun findByEmailIgnoreCase(email: String): GotowinUserEntity?
     fun activateUser(key: String): GotowinUserEntity
@@ -16,6 +15,5 @@ interface UserRepositoryAdapter {
     fun updateWalletAddress(walletAddress: String): GotowinUser
     fun changePassword(password: String)
     fun requestPasswordReset(mail: String)
-    fun completePasswordReset(passwordReset: PasswordReset)
-    fun calculatePrice(value: Int): Map<String, Float>
+    fun completePasswordReset(passwordReset: PasswordResetRequest)
 }

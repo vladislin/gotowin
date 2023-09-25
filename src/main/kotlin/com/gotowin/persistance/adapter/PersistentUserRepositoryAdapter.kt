@@ -6,8 +6,8 @@ import com.gotowin.business.mail.SimpleMailSenderRequest
 import com.gotowin.business.security.UserContextService
 import com.gotowin.core.adapter.UserRepositoryAdapter
 import com.gotowin.core.domain.GotowinUser
-import com.gotowin.core.domain.PasswordReset
-import com.gotowin.core.domain.RegisterDTO
+import com.gotowin.core.domain.PasswordResetRequest
+import com.gotowin.core.domain.RegisterRequest
 import com.gotowin.core.domain.util.RandomUtil
 import com.gotowin.persistance.GotowinUserEntity
 import com.gotowin.persistance.repository.UserRepository
@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.util.*
 
 
 @Service
@@ -31,7 +30,7 @@ class PersistentUserRepositoryAdapter(
     private val logger = LoggerFactory.getLogger(PersistentUserRepositoryAdapter::class.java)
 
     @Transactional
-    override fun registerUser(user: RegisterDTO): GotowinUserEntity {
+    override fun registerUser(user: RegisterRequest): GotowinUserEntity {
         val encryptedPassword = passwordEncoder.encode(user.password)
         val newUser = if (user.referralCode != null && user.referralCode.length > 10) createUserByReferral(user, encryptedPassword)
         else createSimpleUser(user, encryptedPassword)
@@ -41,8 +40,7 @@ class PersistentUserRepositoryAdapter(
         return newUser
     }
 
-    private fun createSimpleUser(user: RegisterDTO, encryptedPassword: String) = GotowinUserEntity(
-        id = UUID.randomUUID(),
+    private fun createSimpleUser(user: RegisterRequest, encryptedPassword: String) = GotowinUserEntity(
         email = user.email,
         fullName = user.fullName,
         password = encryptedPassword,
@@ -52,13 +50,12 @@ class PersistentUserRepositoryAdapter(
         referralCode = RandomUtil.generateReferralCode()
     )
 
-    private fun createUserByReferral(user: RegisterDTO, encryptedPassword: String): GotowinUserEntity {
+    private fun createUserByReferral(user: RegisterRequest, encryptedPassword: String): GotowinUserEntity {
         val referralUser =
             userRepository.findByReferralCode(user.referralCode!!) ?: throw ReferralCodeNotFoundException()
         referralUser.referralCount++
 
         val newUser = GotowinUserEntity(
-            id = UUID.randomUUID(),
             email = user.email,
             fullName = user.fullName,
             password = encryptedPassword,
@@ -117,7 +114,7 @@ class PersistentUserRepositoryAdapter(
         mailService.sendStandardEmail(user, SimpleMailSenderRequest.RESET_PASSWORD.getModel(user))
     }
 
-    override fun completePasswordReset(passwordReset: PasswordReset) {
+    override fun completePasswordReset(passwordReset: PasswordResetRequest) {
         val user = userRepository.findByResetKey(passwordReset.key) ?: throw ResetKeyNotFoundException()
         val newPassword = if (passwordReset.newPassword == passwordReset.newPasswordConfirm) {
             passwordEncoder.encode(passwordReset.newPassword)
@@ -128,12 +125,5 @@ class PersistentUserRepositoryAdapter(
         userRepository.save(user)
 
         logger.debug("Reset user password for reset key {}", passwordReset.key)
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    override fun calculatePrice(value: Int): Map<String, Float> {
-        val convertedValue = (value * 1000).toFloat()
-        return mapOf("convertedValue" to convertedValue)
     }
 }

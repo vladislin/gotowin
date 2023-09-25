@@ -1,22 +1,20 @@
 package com.gotowin.core.domain
 
-import java.util.*
 
-
-data class RegisterDTO(
+data class RegisterRequest(
     val fullName: String,
     val email: String,
     val password: String,
     val confirmPassword: String,
     val referralCode: String? = null
 )
-data class AuthenticateDTO(val email: String, val password: String)
+data class AuthenticateRequest(val email: String, val password: String)
 data class JWTToken(
     val idToken: String
 )
 // TODO: не закінчено
 data class GotowinUser(
-    val id: UUID,
+    val id: Long,
     val email: String,
     val fullName: String,
     val activated: Boolean,
@@ -26,11 +24,11 @@ data class GotowinUser(
     val walletAddress: String,
     val walletBalance: Float,
 )
-data class ChangePassword(
+data class ChangePasswordRequest(
     val password1: String,
     val password2: String
 )
-data class PasswordReset(
+data class PasswordResetRequest(
     val key: String,
     val newPassword: String,
     val newPasswordConfirm: String
@@ -43,3 +41,5 @@ data class WalletAddressUpdate(
 data class CalculateRequest(
     val valueToConvert: Int
 )
+
+data class DepositResponse(val amount: Int)

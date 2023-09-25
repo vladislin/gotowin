@@ -1,6 +1,7 @@
 package com.gotowin.application.configuration
 
 import com.gotowin.core.adapter.UserRepositoryAdapter
+import com.gotowin.core.adapter.WalletRepositoryAdapter
 import com.gotowin.core.facade.UserFacade
 import com.gotowin.core.facade.WalletFacade
 import org.springframework.context.annotation.Bean
@@ -15,7 +16,6 @@ class ApplicationConfiguration {
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
     @Bean
     fun userFacade(userRepositoryAdapter: UserRepositoryAdapter) = UserFacade(userRepositoryAdapter = userRepositoryAdapter)
-
     @Bean
-    fun walletFacade(userRepositoryAdapter: UserRepositoryAdapter) = WalletFacade(userRepositoryAdapter)
+    fun walletFacade(walletRepositoryAdapter: WalletRepositoryAdapter) = WalletFacade(walletRepositoryAdapter = walletRepositoryAdapter)
 }

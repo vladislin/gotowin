@@ -1,18 +1,13 @@
 package com.gotowin.application.web
 
 import com.gotowin.application.configuration.WebSecurityConfig
-import com.gotowin.core.domain.CalculateRequest
-import com.gotowin.core.facade.UserFacade
+import com.gotowin.core.domain.DepositResponse
 import com.gotowin.core.facade.WalletFacade
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.access.annotation.Secured
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/wallet")
@@ -28,8 +23,8 @@ class WalletResource(
     }
 
     @PostMapping("/deposit")
-    fun deposit() {
-        TODO()
+    fun deposit(request: HttpServletRequest, @RequestParam amount: Int): DepositResponse {
+        return walletFacade.deposit(request.remoteAddr, amount)
     }
 
 }

@@ -1,8 +1,11 @@
 package com.gotowin.core.facade
 
-import com.gotowin.core.adapter.UserRepositoryAdapter
-import com.gotowin.core.domain.CalculateRequest
+import com.gotowin.core.adapter.WalletRepositoryAdapter
+import com.gotowin.core.domain.DepositResponse
 
-class WalletFacade(private val userRepositoryAdapter: UserRepositoryAdapter) {
-    fun calculatePrice(value: Int): Map<String, Float> = userRepositoryAdapter.calculatePrice(value)
+
+class WalletFacade(private val walletRepositoryAdapter: WalletRepositoryAdapter) {
+    fun calculatePrice(value: Int): Map<String, Float> = walletRepositoryAdapter.calculatePrice(value)
+
+    fun deposit(customerIp: String, amount: Int): DepositResponse = walletRepositoryAdapter.deposit(customerIp, amount)
 }
