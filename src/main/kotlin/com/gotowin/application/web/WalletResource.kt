@@ -1,11 +1,12 @@
 package com.gotowin.application.web
 
 import com.gotowin.application.configuration.WebSecurityConfig
-import com.gotowin.core.domain.DepositResponse
+import com.gotowin.core.domain.Deposit
 import com.gotowin.core.facade.WalletFacade
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
@@ -23,8 +24,16 @@ class WalletResource(
     }
 
     @PostMapping("/deposit")
-    fun deposit(request: HttpServletRequest, @RequestParam amount: Int): DepositResponse {
+    fun deposit(request: HttpServletRequest, @RequestParam amount: Int): Deposit {
         return walletFacade.deposit(request.remoteAddr, amount)
+    }
+
+    @GetMapping("/callback/{external_transaction_id}")
+    fun callback(
+        @PathVariable("external_transaction_id") externalTransactionId: String,
+        @RequestParam(name = "customer") accountId: String
+    ): ResponseEntity<String> {
+        return walletFacade.callback(externalTransactionId, accountId)
     }
 
 }

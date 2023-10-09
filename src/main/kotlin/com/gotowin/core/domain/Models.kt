@@ -38,8 +38,8 @@ data class WalletAddressUpdate(
     val walletAddress: String
 )
 
-data class CalculateRequest(
-    val valueToConvert: Int
+data class Deposit(
+    val amount: Int,
+    val amountInCrypto: Float,
+    val paymentUrl: String
 )
-
-data class DepositResponse(val amount: Int)

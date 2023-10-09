@@ -1,15 +1,11 @@
 package com.gotowin.persistance
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.gotowin.core.domain.Deposit
 import com.gotowin.core.domain.GotowinUser
+import com.gotowin.core.domain.Transaction
 import jakarta.persistence.*
-import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.type.SqlTypes
 import java.time.LocalDate
-import java.util.*
-
-
-// TODO: Позбутися ролей, вони тут не потрібні
 
 @Entity
 @Table(name = "user")
@@ -51,6 +47,20 @@ data class GotowinUserEntity(
     fun hasAccess() = activated
 }
 
+@Entity
+@Table(name = "deposit")
+data class DepositEntity(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Int? = null,
+    val externalTransactionId: Int,
+    val amount: Int,
+    val amountInCrypto: Float,
+    val userId: Long,
+    val paymentUrl: String,
+    var status: Int
+)
+
 // ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -65,5 +75,24 @@ fun GotowinUserEntity.toBusinessModel(): GotowinUser {
         referralEarnedBalance = referralEarnedBalance,
         walletAddress = walletAddress ?: "",
         walletBalance = walletBalance
+    )
+}
+
+fun DepositEntity.toBusinessEntity(): Deposit {
+    return Deposit(
+        amount = amount,
+        amountInCrypto = amountInCrypto,
+        paymentUrl = paymentUrl
+    )
+}
+
+fun Transaction.toEntity(amountInCrypto: Float): DepositEntity {
+    return DepositEntity(
+        externalTransactionId = this.response.id,
+        amount = this.response.amount.div(100),
+        amountInCrypto = amountInCrypto,
+        paymentUrl = this.response.result!!.payUrl,
+        status = this.response.status,
+        userId = this.response.accountId.toLong()
     )
 }
