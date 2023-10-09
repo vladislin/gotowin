@@ -36,7 +36,8 @@ class WebSecurityConfig(
                 "/api/authenticate",
                 "/api/activate",
                 "/api/account/reset-password/init",
-                "/api/account/reset-password/finish").permitAll()
+                "/api/account/reset-password/finish",
+                "/api/wallet/callback/**").permitAll()
 
             .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
             .anyRequest().authenticated()

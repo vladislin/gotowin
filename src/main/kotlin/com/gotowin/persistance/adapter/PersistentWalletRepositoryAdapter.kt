@@ -31,7 +31,7 @@ class PersistentWalletRepositoryAdapter(
     private val userRepository: UserRepository
 ) : WalletRepositoryAdapter {
     override fun calculatePrice(value: Int): Map<String, Float> {
-        val convertedValue = (value * 1000).toFloat()
+        val convertedValue = (value * 25).toFloat()
         return mapOf("convertedValue" to convertedValue)
     }
 
@@ -44,15 +44,11 @@ class PersistentWalletRepositoryAdapter(
     }
 
     @Transactional
-    override fun callback(id: String, accountId: String): ResponseEntity<String> {
+    override fun callback(id: String, accountId: String): Unit? {
         val transactionStatus = getTransactionStatus(id)
         return when (transactionStatus) {
-            1 -> {
-                updateDepositStatus(id, accountId)
-                ResponseEntity.ok().body("")
-            }
-
-            else -> ResponseEntity.badRequest().body("")
+            1 -> updateDepositStatus(id, accountId)
+            else -> null
         }
     }
 

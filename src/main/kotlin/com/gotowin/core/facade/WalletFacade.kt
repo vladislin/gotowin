@@ -10,5 +10,5 @@ class WalletFacade(private val walletRepositoryAdapter: WalletRepositoryAdapter)
 
     fun deposit(customerIp: String, amount: Int): Deposit = walletRepositoryAdapter.createDeposit(customerIp, amount)
 
-    fun callback(id: String, accountId: String): ResponseEntity<String> = walletRepositoryAdapter.callback(id, accountId)
+    fun callback(id: String, accountId: String) = walletRepositoryAdapter.callback(id, accountId)
 }

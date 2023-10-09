@@ -33,7 +33,8 @@ class WalletResource(
         @PathVariable("external_transaction_id") externalTransactionId: String,
         @RequestParam(name = "customer") accountId: String
     ): ResponseEntity<String> {
-        return walletFacade.callback(externalTransactionId, accountId)
+        val callbackResult = walletFacade.callback(externalTransactionId, accountId)
+        return if (callbackResult != null) ResponseEntity.ok().body("") else ResponseEntity.badRequest().body("")
     }
 
 }
