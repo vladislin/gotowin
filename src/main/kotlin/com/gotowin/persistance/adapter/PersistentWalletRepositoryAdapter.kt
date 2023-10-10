@@ -5,6 +5,7 @@ import com.gotowin.business.security.UserContextService
 import com.gotowin.core.adapter.WalletRepositoryAdapter
 import com.gotowin.core.domain.Deposit
 import com.gotowin.core.domain.Transaction
+import com.gotowin.core.domain.TransactionStatus
 import com.gotowin.persistance.DepositEntity
 import com.gotowin.persistance.GotowinUserEntity
 import com.gotowin.persistance.repository.UserRepository
@@ -69,7 +70,7 @@ class PersistentWalletRepositoryAdapter(
             URI("${applicationProperties.payonhostUri}/transaction/find"),
             HttpMethod.POST,
             HttpEntity(request),
-            Transaction::class.java
+            TransactionStatus::class.java
         )
         return response.body!!.response.status
     }
