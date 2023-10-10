@@ -1,14 +1,15 @@
 package com.gotowin.core.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class TransactionStatus(
-    val response: TransactionStatusResponse
+    @JsonProperty(value = "response") val response: TransactionStatusResponse
 )
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class TransactionStatusResponse(
-    val status: Int,
+    @JsonProperty(value = "status") val status: Int,
 )

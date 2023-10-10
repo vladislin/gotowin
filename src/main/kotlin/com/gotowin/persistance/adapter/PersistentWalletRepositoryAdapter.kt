@@ -12,9 +12,9 @@ import com.gotowin.persistance.repository.UserRepository
 import com.gotowin.persistance.repository.WalletRepository
 import com.gotowin.persistance.toBusinessEntity
 import com.gotowin.persistance.toEntity
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
@@ -31,6 +31,9 @@ class PersistentWalletRepositoryAdapter(
     private val walletRepository: WalletRepository,
     private val userRepository: UserRepository
 ) : WalletRepositoryAdapter {
+
+    private val logger = LoggerFactory.getLogger(PersistentWalletRepositoryAdapter::class.java)
+
     override fun calculatePrice(value: Int): Map<String, Float> {
         val convertedValue = (value * 25).toFloat()
         return mapOf("convertedValue" to convertedValue)
@@ -64,7 +67,7 @@ class PersistentWalletRepositoryAdapter(
         userEntity.walletBalance += depositEntity.amountInCrypto
         userRepository.save(userEntity)
     }
-    private fun getTransactionStatus(id: String): Int {
+    private fun getTransactionStatus(id: String): Int? {
         val request = mapOf("auth" to getCredentials(), "id" to id)
         val response = restTemplate.exchange(
             URI("${applicationProperties.payonhostUri}/transaction/find"),
@@ -72,7 +75,7 @@ class PersistentWalletRepositoryAdapter(
             HttpEntity(request),
             TransactionStatus::class.java
         )
-        return response.body!!.response.status
+        return response.body?.response?.status
     }
     private fun createTransaction(userId: Long, customerIp: String, amount: Int): Transaction {
         val request = mapOf(
@@ -86,7 +89,7 @@ class PersistentWalletRepositoryAdapter(
             "account_id" to applicationProperties.payonhostAccountId,
             "wallet_id" to applicationProperties.payonhostWalletId,
             "point" to mapOf(
-                "callback_url" to "https://gotowin.co/api/wallet/callback/{external_transaction_id}?customer={external_customer_id}",
+                "callback_url" to "https://gotowin.co/api/wallet/callback/{transaction_id}?customer={external_customer_id}",
                 "success_url" to "https://gotowin.co/profile",
                 "fail_url" to "https://gotowin.co/"
             )
