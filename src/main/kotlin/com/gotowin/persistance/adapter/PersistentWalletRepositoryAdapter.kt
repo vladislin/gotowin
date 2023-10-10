@@ -85,7 +85,9 @@ class PersistentWalletRepositoryAdapter(
             "account_id" to applicationProperties.payonhostAccountId,
             "wallet_id" to applicationProperties.payonhostWalletId,
             "point" to mapOf(
-                "callback_url" to "https://gotowin.co/api/wallet/callback/{external_transaction_id}?customer={external_customer_id}"
+                "callback_url" to "https://gotowin.co/api/wallet/callback/{external_transaction_id}?customer={external_customer_id}",
+                "success_url" to "https://gotowin.co/profile",
+                "fail_url" to "https://gotowin.co/"
             )
         )
         val response = restTemplate.exchange(
