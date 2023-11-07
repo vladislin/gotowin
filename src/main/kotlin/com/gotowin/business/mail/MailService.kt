@@ -19,14 +19,13 @@ class MailService(private val javaMailSender: JavaMailSender,
                   private val templateEngine: SpringTemplateEngine) {
 
     private val logger = LoggerFactory.getLogger(MailService::class.java)
-
-    @Value("\${spring.mail.username}")
-    private val fromAddress: String = ""
+    @Value("\${spring.mail.username}") private val fromAddress: String = ""
 
     companion object {
         const val USER_KEY = "user"
         const val MODEL_KEY = "model"
         const val DEFAULT_TEMPLATE_NAME = "default"
+        const val ADMIN_DEPOSIT_TEMPLATE_NAME = "admin-deposit"
     }
     @Async
     fun sendStandardEmail(user: GotowinUserEntity, model: MailModel) {
@@ -37,6 +36,15 @@ class MailService(private val javaMailSender: JavaMailSender,
         val subject = model.subject
         val from = InternetAddress(fromAddress, model.from)
         sendMail(from, user.email, subject, content)
+    }
+
+    @Async
+    fun sendDepositNotificationForAdmin(to: String, subject: String, attributes: Map<String, Any>) {
+        val context = Context(Locale.ENGLISH)
+        context.setVariables(attributes)
+        val content = templateEngine.process(ADMIN_DEPOSIT_TEMPLATE_NAME, context)
+        val from = InternetAddress(fromAddress)
+        sendMail(from, to, subject, content)
     }
     private fun sendMail(from: InternetAddress, to: String, subject: String, content: String) {
         logger.debug("Send email to '{}' with subject '{}' and content={}", to, subject, content)

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .table {
+            border-collapse: collapse;
+            width: 600px;
+            border-radius: 50px;
+            border: 1px solid #dee2e6;
+        }
+        .header {
+            width: 260px;
+            vertical-align: center;
+        }
+        .content {
+            height: 110px;
+            vertical-align: center;
+            padding: 0 15px
+        }
+        hr {
+            border: none;
+            color: #dee2e6;
+            background-color: #dee2e6;
+            height: 1px;
+        }
+    </style>
+</head>
+<body>
+<table align="center" class="table">
+    <tr>
+        <td style="background-color: #ffffff; padding: 40px 30px 40px 30px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                <tr>
+                    <td class="header" align="center">
+                        <h3>Поповнення # <span th:text="${deposit.id}" th:remove="tag"></span></h3>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <h3 style="text-align: center">Привіт!</h3>
+            <p style="text-align: center">На сайті було успішно здійснено поповнення користувачем.</p>
+            <hr/>
+            <div class="text-left">
+                <p><b>Номер поповнення: <span th:text="${deposit.id}" th:remove="tag"></span></b></p>
+                <p><b>Ім'я користувача: </b> <span th:text="${user.fullName}"th:remove="tag"></span></p>
+                <p><b>Email:</b> <span th:text="${user.email}" th:remove="tag"></span></p>
+                <p><b>Сума в валюті: </b> <span th:text="${deposit.amount}" th:remove="tag"></span></p>
+                <p><b>Сума монетами: </b> <span th:text="${deposit.amountInCrypto}" th:remove="tag"></span></p>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
