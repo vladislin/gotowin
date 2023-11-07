@@ -1,11 +1,13 @@
 package com.gotowin.persistance.adapter
 
 import com.gotowin.application.configuration.ApplicationProperties
+import com.gotowin.business.mail.MailService
 import com.gotowin.business.security.UserContextService
 import com.gotowin.core.adapter.WalletRepositoryAdapter
 import com.gotowin.core.domain.Deposit
-import com.gotowin.core.domain.Transaction
 import com.gotowin.core.domain.TransactionStatus
+import com.gotowin.core.domain.Transaction
+import com.gotowin.core.domain.ExternalTransactionStatus
 import com.gotowin.persistance.DepositEntity
 import com.gotowin.persistance.GotowinUserEntity
 import com.gotowin.persistance.repository.UserRepository
@@ -13,6 +15,7 @@ import com.gotowin.persistance.repository.WalletRepository
 import com.gotowin.persistance.toBusinessEntity
 import com.gotowin.persistance.toEntity
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
@@ -22,6 +25,7 @@ import java.math.BigInteger
 import java.net.URI
 import java.security.MessageDigest
 import java.time.Instant
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PersistentWalletRepositoryAdapter(
@@ -29,10 +33,16 @@ class PersistentWalletRepositoryAdapter(
     private val userContextService: UserContextService,
     private val applicationProperties: ApplicationProperties,
     private val walletRepository: WalletRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val mailService: MailService
 ) : WalletRepositoryAdapter {
 
+    companion object {
+        const val REFERRAL_PERCENT = 0.15f
+    }
+
     private val logger = LoggerFactory.getLogger(PersistentWalletRepositoryAdapter::class.java)
+    @Value("\${spring.mail.username}") private val toAddress: String = ""
 
     override fun calculatePrice(value: Int): Map<String, Float> {
         val convertedValue = (value * 25).toFloat()
@@ -48,34 +58,61 @@ class PersistentWalletRepositoryAdapter(
     }
 
     @Transactional
-    override fun callback(id: String, accountId: String): Unit? {
-        val transactionStatus = getTransactionStatus(id)
-        return when (transactionStatus) {
-            1 -> updateDepositStatus(id, accountId)
-            else -> null
-        }
+    override fun callback(id: String, accountId: String) {
+        val transactionStatus: TransactionStatus = getTransactionStatus(id)
+        val updatedDeposit: DepositEntity = updateDepositStatus(id, accountId, transactionStatus)
+        val updatedUser: GotowinUserEntity = updateUserBalance(accountId, updatedDeposit)
+        updateReferrerBalance(updatedUser.referralUserId!!, updatedDeposit)
+        mailService.sendDepositNotificationForAdmin(
+            to = "vlad.slinchuk@gmail.com",
+            subject = "Поповнення На Сайті",
+            attributes = mapOf(
+                "user" to updatedUser,
+                "deposit" to updatedDeposit
+            )
+        )
     }
 
-    private fun updateDepositStatus(id : String, accountId: String) {
-        val depositEntity = walletRepository.findByExternalTransactionIdAndUserId(id.toInt(), accountId.toLong())
-        depositEntity.status = 1
-        walletRepository.save(depositEntity)
-        updateUserBalance(accountId, depositEntity)
+    private fun updateReferrerBalance(referralUserId: Long, deposit: DepositEntity) {
+        val referrer: GotowinUserEntity? = userRepository.findById(referralUserId).orElse(null)
+        val amountForReferral = deposit.amountInCrypto * REFERRAL_PERCENT
+        if (referrer == null) {
+          return
+        }
+        referrer.referralEarnedBalance = amountForReferral
+        userRepository.save(referrer)
     }
-    private fun updateUserBalance(accountId: String, depositEntity: DepositEntity) {
+
+    private fun updateDepositStatus(id : String, accountId: String, transactionStatus: TransactionStatus): DepositEntity {
+        val depositEntity: DepositEntity = walletRepository.findByExternalTransactionIdAndUserId(id.toInt(), accountId.toLong())
+        depositEntity.status = transactionStatus
+        walletRepository.save(depositEntity)
+        return depositEntity
+    }
+    private fun updateUserBalance(accountId: String, depositEntity: DepositEntity): GotowinUserEntity {
         val userEntity = userRepository.findById(accountId.toLong()).orElse(null)
         userEntity.walletBalance += depositEntity.amountInCrypto
         userRepository.save(userEntity)
+        return userEntity
     }
-    private fun getTransactionStatus(id: String): Int? {
+    private fun getTransactionStatus(id: String): TransactionStatus {
         val request = mapOf("auth" to getCredentials(), "id" to id)
         val response = restTemplate.exchange(
             URI("${applicationProperties.payonhostUri}/transaction/find"),
             HttpMethod.POST,
             HttpEntity(request),
-            TransactionStatus::class.java
+            ExternalTransactionStatus::class.java
         )
-        return response.body?.response?.status
+        return when (response.body!!.response.status) {
+            0 -> TransactionStatus.NEW
+            1 -> TransactionStatus.SUCCESS
+            2 -> TransactionStatus.FAILED
+            3 -> TransactionStatus.CANCELLED
+            4 -> TransactionStatus.REVERSED
+            5 -> TransactionStatus.EXPIRED
+            6 -> TransactionStatus.HOLD
+            else -> TransactionStatus.PENDING
+        }
     }
     private fun createTransaction(userId: Long, customerIp: String, amount: Int): Transaction {
         val request = mapOf(
@@ -88,11 +125,11 @@ class PersistentWalletRepositoryAdapter(
             "service_id" to applicationProperties.payonhostServiceId,
             "account_id" to applicationProperties.payonhostAccountId,
             "wallet_id" to applicationProperties.payonhostWalletId,
-            "point" to mapOf(
-                "callback_url" to "https://gotowin.co/api/wallet/callback/{transaction_id}?customer={external_customer_id}",
-                "success_url" to "https://gotowin.co/profile",
-                "fail_url" to "https://gotowin.co/"
-            )
+//            "point" to mapOf(
+//                "callback_url" to "https://gotowin.co/api/wallet/callback/{transaction_id}?customer={external_customer_id}",
+//                "success_url" to "https://gotowin.co/profile",
+//                "fail_url" to "https://gotowin.co/"
+//            )
         )
         val response = restTemplate.exchange(
             URI("${applicationProperties.payonhostUri}/transaction/create"),

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.gotowin.core.domain.Deposit
 import com.gotowin.core.domain.GotowinUser
 import com.gotowin.core.domain.Transaction
+import com.gotowin.core.domain.TransactionStatus
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -58,7 +59,7 @@ data class DepositEntity(
     val amountInCrypto: Float,
     val userId: Long,
     val paymentUrl: String,
-    var status: Int
+    @Enumerated(EnumType.STRING) var status: TransactionStatus
 )
 
 // ----------------------------------------------------------------------------------------------------------------------
@@ -92,7 +93,7 @@ fun Transaction.toEntity(amountInCrypto: Float): DepositEntity {
         amount = this.response.amount.div(100),
         amountInCrypto = amountInCrypto,
         paymentUrl = this.response.result!!.payUrl,
-        status = this.response.status,
+        status = TransactionStatus.values().getOrNull(this.response.status) ?: TransactionStatus.NEW,
         userId = this.response.accountId.toLong()
     )
 }

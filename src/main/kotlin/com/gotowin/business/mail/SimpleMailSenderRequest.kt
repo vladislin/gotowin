@@ -2,7 +2,6 @@ package com.gotowin.business.mail
 
 import com.gotowin.core.domain.MailModel
 import com.gotowin.persistance.GotowinUserEntity
-import org.springframework.beans.factory.annotation.Value
 
 enum class SimpleMailSenderRequest : MailSenderRequest {
     RESET_PASSWORD {
